@@ -1,0 +1,16 @@
+name: Crasher
+version: '${project.version}'
+main: cn.xuexu.crasher.Crasher
+prefix: Crasher
+load: STARTUP
+loadbefore: [ ProtocolLib ]
+authors: [ xuexu ]
+description: Crash Player Client
+permissions:
+  crasher.admin:
+    description: Admin Permission
+    default: op
+commands:
+  Crash:
+    description: Crash Player Client
+    permission: crasher.admin

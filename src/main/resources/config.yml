@@ -1,0 +1,116 @@
+# C R A S H E R
+# The code written is generally used for practice purposes~
+# English is not very good, many of them are machine translated, sorry
+# 写的代码一般，就是拿来当作练习用的~
+# 英文不是很好，很多都是机翻，不好意思
+
+# Settings
+# 设置
+Settings:
+  # Automatically check for updates and remind
+  # 自动检查更新并提醒
+  CheckUpdate: true
+  # Cancel all switch settings for sending and receiving data packets
+  # 取消所有数据包发送和接受的开关设置
+  CancelPackets:
+    # Whether to kick out the player after canceling all packets sent using the packetsCancel command (kicked out packets are only visible to the server). Default: true
+    # 使用packetscancel命令后取消所有数据包发送后是否踢出玩家（踢出数据包只有服务端可见）。默认: true
+    CancelPacketsKick: false
+    #[Warning] This feature may have security and performance issues if it has not been fully tested!!! The core of plugin construction is 1.8_R3, if the server version and plugin version do not match, there may be errors or major vulnerabilities (you can choose to enable it if you don't care). Save the received and sent packets and forge a packet for the server to reprocess and send after re entering the command. Default: false
+    # [警告] 这个功能未经过完整测试可能会有安全和性能问题！！！插件构建核心是1.8_R3，若服务端版本和插件版本不符可能会出现报错或重大漏洞（不在乎可以选择开启）保存接受和发送的数据包并在重新输入命令后给服务端伪造一份数据包重新处理以及发送。默认: false
+    CancelPacketsResend: true
+  # Entity packet crash settings
+  # 实体数据包崩溃设置
+  EntitysCrash:
+    #Whether to kick out the player after canceling all packets sent using the entitys command (kicked out packets are only visible to the server). Default: false
+    # 使用entitys命令后取消所有数据包发送后是否踢出玩家（踢出数据包只有服务端可见）。默认: false
+    CancelKick: false
+    # Number of packets sent. Default: 99999
+    # 发送的数据包数量。默认：99999
+    PacketLimit: 99999
+  # Explosive packet crash settings
+  # 爆炸数据包崩溃设置
+  ExplosionsCrash:
+    # Whether to kick out the player after canceling all packets sent using the explorations command (kick out packets are only visible to the server). Default: false
+    # 使用explosions命令后取消所有数据包发送后是否踢出玩家（踢出数据包只有服务端可见）。默认: false
+    CancelKick: false
+    # Send Packet Limit. Default: 99
+    # 发送的数据包数量。默认：99
+    PacketLimit: 99
+  # Frozen settings
+  # Frozen设置
+  Frozen:
+    # The size of the Frozen inventory, a multiple of 9, must not exceed 126. Default: 126
+    # Frozen界面的大小，9的倍数，不得超过126。默认：126
+    FrozenGUISize: 126
+    # Is the item in the Frozen inventory enchanted with light effects. Default: true
+    # Frozen界面的物品是否附魔光效。默认：true
+    FrozenGUIItemEnchant: true
+    # The item name on the Frozen inventory (in uppercase English) Default: BEDROCK
+    # Frozen界面的物品名（英文大写）默认：WOOL
+    FrozenGUIItem: "WOOL"
+    # The quantity of each item in the Frozen inventory. Default: -1
+    # Frozen界面的每个物品数量。默认：-1
+    FrozenGUIItemAmount: -1
+    # Frozen inventory item [durability?], format String. Default: 0
+    # Frozen界面物品[?耐久度?], 格式String。默认：0
+    FrozenGUIItemDamage: "0"
+    #F rozen inventory item ID, for example, red wool is 14. Default: 14
+    # Frozen界面物品ID，例如红色羊毛为14.默认：14
+    FrozenGUIItemByte: "14"
+    # Frozen time exits the switch for executing commands on the server. Default: true
+    # Frozen时间退出服务器执行命令的开关。默认：true
+    QuitCommandBoolean: true
+    # The command to exit the server at Frozen time. (Replace player name with% player%) Default: ban% player%
+    # Frozen时间退出服务器执行的命令。（使用%player%替换玩家名称）默认：ban %player%
+    QuitCommandList:
+      - "ban %player%"
+# Text(Support color char '&').
+# 文本（支持彩色字符'&'）。
+Messages:
+  #Kick out the player's text. Default: Time Out
+  # 踢出玩家的文本。默认：Time Out
+  TImeOutKick: "Time Out"
+  # The text indicating the successful execution of the command. Default:&aDone
+  # 命令运行成功的文本。默认：&aDone
+  CommandDone: "&aDone"
+  # Not enough permission text. Default:&cYou dont have permission to execute this command
+  # 没有足够的权限文本。默认：&cYou dont have permission to execccute this command.
+  CommandNoPermission: "&cYou dont have permission to execccute this command."
+  # Remove the text of players from the crash list. Default: &4Player has been removed form crashlist! if you want re-add to crashlist please re-type this command.
+  # 移除crashlist列表玩家的文本。默认：&4Player has been removed form crashlist! if you want re-add to crashlist please re-type this command.
+  CommandRemoveCrashList: "&cPlayer has been removed form crashlist! if you want re-add to crashlist please re-type this command."
+  # The player is not online. Default:&cPlayer is not online.
+  # 玩家不在线。默认：&cPlayer is not online.
+  CommandPlayerNotOnline: "&cPlayer is not online."
+  #The title of the Frozen inventory. [Warning] Do not set it too simply as it may be replaced by other plugins or bypassed by players. Default: &4&lYou have been Frozen.
+  # Frozen背包的标题。[警告] 不要设置太简单，可能会被其他插件顶替或被玩家绕过。默认：&4&lYou have been Frozen.
+  FrozenGUITitle: "&4&lYou have been Frozen."
+  # The item display name of Frozen inventory. Default:&4&lYou have been Frozen.
+  # Frozen背包的物品展示名称。默认：&4&lYou have been Frozen.
+  FrozenGUIItemName: "&4&lYou have been Frozen."
+  # The display properties of Frozen inventory [Reminder] List. Default:&cDENT CLOSE YOU GAME
+  # Frozen背包的展示属性. [提醒] 列表。默认：&cDONT CLOSE YOUR GAME
+  FrozenGUIItemLores:
+    - "&cDONT CLOSE YOUR GAME"
+  # Remove player Frozen text. Default: &cPlayer has been removed form frozen! if you want re-frozen please re-type this command.
+  # 移除玩家Frozen的文本。默认：&cPlayer has been removed form frozen! if you want re-frozen please re-type this command.
+  CommandFrozenRemove: "&cPlayer has been removed form frozen! if you want re-frozen please re-type this command."
+  # The plugin generates error messages and sends them to the player as text. Default:&4&lA ERROR HAS SPAWNED IN CONSOLE!
+  # 插件生成报错发给玩家的文本。默认：&4&lA ERROR HAS SPAWNED IN CONSOLE!
+  ERROR: "&4&lA ERROR HAS SPAWNED IN CONSOLE!"
+
+# 开发者设置
+# Develop Settings
+Debug:
+  # Config Version(Dont Edit)
+  # 配置文件版本（禁止修改）
+  CfgVer: 1.0
+  # Packet listening
+  # 数据包监听
+  PacketListener:
+    # Listen for printing mode when canceling data packets. Default: false
+    # 数据包取消时监听打印模式。默认：false
+    mode: false
+# More is coming soon
+# 更多的正在制作

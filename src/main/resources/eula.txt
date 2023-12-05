@@ -1,0 +1,3 @@
+# 源码中不放条款
+# 例：eula: true
+eula: false
