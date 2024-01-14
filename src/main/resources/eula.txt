@@ -1,3 +1,5 @@
-# 源码中不放条款
-# 例：eula: true
-eula: false
+# 随便写的, 免责声明
+
+# 我了解并同意以上协议：
+# 例: eula: true
+eula: true

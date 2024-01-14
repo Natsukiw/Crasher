@@ -12,7 +12,6 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -296,177 +295,6 @@ public final class Metrics {
         }
     }
 
-    public static class SimplePie extends CustomChart {
-
-        private final Callable<String> callable;
-
-        public SimplePie(final String chartId, final Callable<String> callable) {
-            super(chartId);
-            this.callable = callable;
-        }
-
-        @Override
-        protected JsonObjectBuilder.JsonObject getChartData() throws Exception {
-            final String value = callable.call();
-            if (value == null || value.isEmpty()) {
-                return null;
-            }
-            return new JsonObjectBuilder().appendField("value", value).build();
-        }
-    }
-
-    public static class MultiLineChart extends CustomChart {
-
-        private final Callable<Map<String, Integer>> callable;
-
-        public MultiLineChart(final String chartId, final Callable<Map<String, Integer>> callable) {
-            super(chartId);
-            this.callable = callable;
-        }
-
-        @Override
-        protected JsonObjectBuilder.JsonObject getChartData() throws Exception {
-            final JsonObjectBuilder valuesBuilder = new JsonObjectBuilder();
-            final Map<String, Integer> map = callable.call();
-            if (map == null || map.isEmpty()) {
-                return null;
-            }
-            boolean allSkipped = true;
-            for (Map.Entry<String, Integer> entry : map.entrySet()) {
-                if (entry.getValue() == 0) {
-                    continue;
-                }
-                allSkipped = false;
-                valuesBuilder.appendField(entry.getKey(), entry.getValue());
-            }
-            if (allSkipped) {
-                return null;
-            }
-            return new JsonObjectBuilder().appendField("values", valuesBuilder.build()).build();
-        }
-    }
-
-    public static class AdvancedPie extends CustomChart {
-
-        private final Callable<Map<String, Integer>> callable;
-
-        public AdvancedPie(String chartId, Callable<Map<String, Integer>> callable) {
-            super(chartId);
-            this.callable = callable;
-        }
-
-        @Override
-        protected JsonObjectBuilder.JsonObject getChartData() throws Exception {
-            final JsonObjectBuilder valuesBuilder = new JsonObjectBuilder();
-            final Map<String, Integer> map = callable.call();
-            if (map == null || map.isEmpty()) {
-                return null;
-            }
-            boolean allSkipped = true;
-            for (final Map.Entry<String, Integer> entry : map.entrySet()) {
-                if (entry.getValue() == 0) {
-                    continue;
-                }
-                allSkipped = false;
-                valuesBuilder.appendField(entry.getKey(), entry.getValue());
-            }
-            if (allSkipped) {
-                return null;
-            }
-            return new JsonObjectBuilder().appendField("values", valuesBuilder.build()).build();
-        }
-    }
-
-    public static class SimpleBarChart extends CustomChart {
-
-        private final Callable<Map<String, Integer>> callable;
-
-        public SimpleBarChart(final String chartId, final Callable<Map<String, Integer>> callable) {
-            super(chartId);
-            this.callable = callable;
-        }
-
-        @Override
-        protected final JsonObjectBuilder.JsonObject getChartData() throws Exception {
-            final JsonObjectBuilder valuesBuilder = new JsonObjectBuilder();
-            final Map<String, Integer> map = callable.call();
-            if (map == null || map.isEmpty()) {
-                return null;
-            }
-            for (final Map.Entry<String, Integer> entry : map.entrySet()) {
-                valuesBuilder.appendField(entry.getKey(), new int[]{entry.getValue()});
-            }
-            return new JsonObjectBuilder().appendField("values", valuesBuilder.build()).build();
-        }
-    }
-
-    public final static class AdvancedBarChart extends CustomChart {
-
-        private final Callable<Map<String, int[]>> callable;
-
-        public AdvancedBarChart(String chartId, Callable<Map<String, int[]>> callable) {
-            super(chartId);
-            this.callable = callable;
-        }
-
-        @Override
-        protected JsonObjectBuilder.JsonObject getChartData() throws Exception {
-            final JsonObjectBuilder valuesBuilder = new JsonObjectBuilder();
-            final Map<String, int[]> map = callable.call();
-            if (map == null || map.isEmpty()) {
-                return null;
-            }
-            boolean allSkipped = true;
-            for (final Map.Entry<String, int[]> entry : map.entrySet()) {
-                if (entry.getValue().length == 0) {
-                    continue;
-                }
-                allSkipped = false;
-                valuesBuilder.appendField(entry.getKey(), entry.getValue());
-            }
-            if (allSkipped) {
-                return null;
-            }
-            return new JsonObjectBuilder().appendField("values", valuesBuilder.build()).build();
-        }
-    }
-
-    public final static class DrilldownPie extends CustomChart {
-
-        private final Callable<Map<String, Map<String, Integer>>> callable;
-
-        public DrilldownPie(String chartId, Callable<Map<String, Map<String, Integer>>> callable) {
-            super(chartId);
-            this.callable = callable;
-        }
-
-        @Override
-        public JsonObjectBuilder.JsonObject getChartData() throws Exception {
-            final JsonObjectBuilder valuesBuilder = new JsonObjectBuilder();
-            final Map<String, Map<String, Integer>> map = callable.call();
-            if (map == null || map.isEmpty()) {
-                return null;
-            }
-            boolean reallyAllSkipped = true;
-            for (final Map.Entry<String, Map<String, Integer>> entryValues : map.entrySet()) {
-                final JsonObjectBuilder valueBuilder = new JsonObjectBuilder();
-                boolean allSkipped = true;
-                for (final Map.Entry<String, Integer> valueEntry : map.get(entryValues.getKey()).entrySet()) {
-                    valueBuilder.appendField(valueEntry.getKey(), valueEntry.getValue());
-                    allSkipped = false;
-                }
-                if (!allSkipped) {
-                    reallyAllSkipped = false;
-                    valuesBuilder.appendField(entryValues.getKey(), valueBuilder.build());
-                }
-            }
-            if (reallyAllSkipped) {
-                return null;
-            }
-            return new JsonObjectBuilder().appendField("values", valuesBuilder.build()).build();
-        }
-    }
-
     public abstract static class CustomChart {
 
         private final String chartId;
@@ -500,25 +328,6 @@ public final class Metrics {
         protected abstract JsonObjectBuilder.JsonObject getChartData() throws Exception;
     }
 
-    public final static class SingleLineChart extends CustomChart {
-
-        private final Callable<Integer> callable;
-
-        public SingleLineChart(final String chartId, final Callable<Integer> callable) {
-            super(chartId);
-            this.callable = callable;
-        }
-
-        @Override
-        protected JsonObjectBuilder.JsonObject getChartData() throws Exception {
-            int value = callable.call();
-            if (value == 0) {
-                return null;
-            }
-            return new JsonObjectBuilder().appendField("value", value).build();
-        }
-    }
-
     public final static class JsonObjectBuilder {
 
         private StringBuilder builder = new StringBuilder();
@@ -548,11 +357,6 @@ public final class Metrics {
             return builder.toString();
         }
 
-        public JsonObjectBuilder appendNull(final String key) {
-            appendFieldUnescaped(key, "null");
-            return this;
-        }
-
         public JsonObjectBuilder appendField(final String key, final String value) {
             if (value == null) {
                 throw new IllegalArgumentException("JSON value must not be null");
@@ -571,18 +375,6 @@ public final class Metrics {
                 throw new IllegalArgumentException("JSON object must not be null");
             }
             appendFieldUnescaped(key, object.toString());
-            return this;
-        }
-
-        public JsonObjectBuilder appendField(final String key, final String[] values) {
-            if (values == null) {
-                throw new IllegalArgumentException("JSON values must not be null");
-            }
-            final String escapedValues =
-                    Arrays.stream(values)
-                            .map(value -> "\"" + escape(value) + "\"")
-                            .collect(Collectors.joining(","));
-            appendFieldUnescaped(key, "[" + escapedValues + "]");
             return this;
         }
 
