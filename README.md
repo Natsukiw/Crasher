@@ -37,7 +37,7 @@
 OP权限：crasher.admin
 
 ### 命令(commands):
-/Crasher <Player/reload> <cancel_packets/explosions/entitys>
+/Crasher <Player/reload> <cancel_packets/explosions/entitys/frozen>
 
 
 ### 配置文件(config.yml)：
