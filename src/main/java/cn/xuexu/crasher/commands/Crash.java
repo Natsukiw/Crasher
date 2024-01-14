@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.InventoryType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public final class Crash implements TabExecutor {
@@ -80,17 +81,34 @@ public final class Crash implements TabExecutor {
     @Override
     public List<String> onTabComplete(final CommandSender commandSender, final Command command, final String s, final String[] strings) {
         if (commandSender.hasPermission("crasher.admin")) {
+            if (strings.length == 1) {
+                final List<String> playerList = new ArrayList<>();
+                playerList.add("reload");
+                for (Player op : Bukkit.getOnlinePlayers()) {
+                    playerList.add(op.getName());
+                }
+                final List<String> returnList = new ArrayList<>();
+                for (String start : playerList) {
+                    if (start.toLowerCase().startsWith(strings[0].toLowerCase())) {
+                        returnList.add(start);
+                    }
+                }
+                return returnList;
+            }
             if (strings.length == 2) {
-                final List<String> completions = Arrays.asList("cancel_packets", "entitys", "explosions", "frozen", "reload");
+                if (strings[0].equalsIgnoreCase("reload")) {
+                    return Collections.EMPTY_LIST;
+                }
+                final List<String> completions = Arrays.asList("cancel_packets", "entitys", "explosions", "frozen");
                 final List<String> returnList = new ArrayList<>();
                 for (String start : completions) {
-                    if (start.startsWith(strings[1])) {
+                    if (start.toLowerCase().startsWith(strings[1].toLowerCase())) {
                         returnList.add(start);
                     }
                 }
                 return returnList;
             }
         }
-        return null;
+        return Collections.EMPTY_LIST;
     }
 }

@@ -13,6 +13,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public final class PlayerListener implements Listener {
@@ -86,6 +87,23 @@ public final class PlayerListener implements Listener {
             @Override
             public void run() {
                 player.openInventory(Utils.frozenInventory(player));
+            }
+        }.runTaskAsynchronously(Utils.instance);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void playerTeleport(final PlayerTeleportEvent event) {
+        if (!Utils.frozenSet.contains(event.getPlayer().getUniqueId())) {
+            return;
+        }
+        event.setCancelled(true);
+        if (event.getPlayer().getOpenInventory() != null && event.getPlayer().getOpenInventory().getTitle().equals(ChatColor.translateAlternateColorCodes('&', Utils.instance.getConfig().getString("Messages.FrozenGUITitle"))) && event.getPlayer().getOpenInventory().getType().equals(InventoryType.CHEST)) {
+            return;
+        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                event.getPlayer().openInventory(Utils.frozenInventory(event.getPlayer()));
             }
         }.runTaskAsynchronously(Utils.instance);
     }

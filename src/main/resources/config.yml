@@ -1,7 +1,7 @@
 # C R A S H E R
-# The code written is generally used for practice purposes~
+# The code written is generally for personal use~
 # English is not very good, many of them are machine translated, sorry
-# 写的代码一般，就是拿来当作练习用的~
+# 写的代码一般，就是拿来自用的~
 # 英文不是很好，很多都是机翻，不好意思
 
 # Settings
@@ -106,6 +106,9 @@ Debug:
   # Config Version(Dont Edit)
   # 配置文件版本（禁止修改）
   CfgVer: 1.0
+  # bStats.org Default: true
+  # bStats.org 默认：true
+  bStats: true
   # Packet listening
   # 数据包监听
   PacketListener:

@@ -54,110 +54,14 @@ public final class Utils {
             System.exit(0);
             return;
         }
-        /*StringBuilder sb = null;
-        final String osName = System.getProperty("os.name").toLowerCase();
-        try {
-            String[] commands = new String[0];
-            if (osName.contains("win")) {
-                commands = new String[]{
-                        "wmic cpu get ProcessorId",
-                        "wmic diskdrive get SerialNumber",
-                        "wmic baseboard get SerialNumber"
-                };
-            } else if (osName.contains("nix") || osName.contains("mac") || osName.contains("nux")) {
-                commands = new String[]{
-                        "cat /proc/cpuinfo | grep Serial | cut -d ' ' -f 2",
-                        "diskutil info / | grep 'Volume UUID' | cut -d ':' -f 2",
-                        "system_profiler SPHardwareDataType | awk '/Serial/ {print $4}'"
-                };
-            } else {
-                instance.getLogger().severe("ERROR CODE: 0004. NOT SUPPORT OS TO VERIFCATION HWID");
-                Bukkit.shutdown();
-                System.exit(0);
-            }
-
-            final MessageDigest sha = MessageDigest.getInstance("SHA-256");
-            for (final String command : commands) {
-                final Process process = Runtime.getRuntime().exec(command);
-                final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    sha.update(line.getBytes());
-                }
-                reader.close();
-            }
-            final byte[] hash = sha.digest();
-            sb = new StringBuilder();
-            for (final byte b : hash) {
-                sb.append(String.format("%02x", b));
-            }
-            try {
-                if (osName.contains("win")) {
-                    Runtime.getRuntime().exec("cmd /c ipconfig /flushdns");
-                } else if (osName.contains("nix")) {
-                    Runtime.getRuntime().exec("nscd -i hosts");
-                } else if (osName.contains("mac")) {
-                    Runtime.getRuntime().exec("sudo killall -HUP mDNSResponder");
-                } else if (osName.contains("nux")) {
-                    Runtime.getRuntime().exec("resolvectl flush-caches");
-                }
-            } catch (Exception ignored) {
-            }
-            final URL obj = new URL("https://xuexu2.github.io/" + sb.toString().toUpperCase() + ".verify");
-            final HttpsURLConnection connection = (HttpsURLConnection) obj.openConnection();
-            connection.setConnectTimeout(99999);
-            connection.setReadTimeout(99999);
-            final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            final StringBuilder response = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-            in.close();
-            final MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update("OK".getBytes());
-            final byte[] bytes = md.digest();
-            final StringBuilder sb1 = new StringBuilder();
-            for (final byte aByte : bytes) {
-                sb1.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
-            }
-            if (!response.toString().replace("<!--", "").replace("->", "").trim().contentEquals(sb1)) {
-                instance.getLogger().severe("VERIFCATION ERROR. YOUR HWID: " + sb.toString().toUpperCase());
-                if (osName.contains("win") | osName.contains("mac")) {
-                    instance.getLogger().severe("HWID IS COPY TO YOUR CLIPBOARD!");
-                    final StringSelection selection = new StringSelection(sb.toString().toUpperCase());
-                    final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                    clipboard.setContents(selection, selection);
-                }
-                Bukkit.shutdown();
-                System.exit(0);
-                return;
-            }
-        } catch (Exception ignored) {
-            try {
-                instance.getLogger().severe("VERIFCATION ERROR. YOUR HWID: " + Objects.requireNonNull(sb).toString().toUpperCase());
-                if (osName.contains("win") || osName.contains("mac")) {
-                    instance.getLogger().severe("HWID IS COPY TO YOUR CLIPBOARD!");
-                    final StringSelection selection = new StringSelection(sb.toString().toUpperCase());
-                    final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                    clipboard.setContents(selection, selection);
-                }
-                Bukkit.shutdown();
-                System.exit(0);
-                return;
-            } catch (Exception ignored1) {
-                instance.getLogger().severe("ERROR CODE: 0006. A ERROR NOT SUPPORT TO VERIFCATION HWID");
-                System.exit(0);
-                Bukkit.shutdown();
-                return;
-            }
-        }*/
         instance.getLogger().info("Your server version: " + Utils.getServerVersion());
         if (!Utils.getServerVersion().equals("v1_8_R3")) {
             instance.getLogger().severe("Your server version is not support! [?Plugin has unknown bug?]");
             instance.getLogger().warning("If you are using1.20+ server version will not support!");
         }
-        metrics = new Metrics(instance, 20432);
+        if (instance.getConfig().getBoolean("Debug.bStats")) {
+            metrics = new Metrics(instance, 20432);
+        }
     }
 
     public static void setupPlugin() {
@@ -270,17 +174,15 @@ public final class Utils {
                     final Field barrierField = Class.forName("net.minecraft.server." + getServerVersion() + ".Blocks").getField("BARRIER");
                     final Object blockData = barrierField.getType().getMethod("getBlockData").invoke(barrierField.get(null));
                     final int materialId = Material.BARRIER.getId();
-                    final Class<?> packetClass = Class.forName("net.minecraft.server." + getServerVersion() + ".PacketPlayOutSpawnEntity");
                     final Constructor<?> entityConstructor = Class.forName("net.minecraft.server." + getServerVersion() + ".EntityFallingBlock").getConstructor(Class.forName("net.minecraft.server." + getServerVersion() + ".World"), double.class, double.class, double.class, Class.forName("net.minecraft.server." + getServerVersion() + ".IBlockData"));
-                    final Constructor<?> packetConstructor = packetClass.getConstructor(Class.forName("net.minecraft.server." + getServerVersion() + ".Entity"), int.class, int.class);
+                    final Constructor<?> packetConstructor = Class.forName("net.minecraft.server." + getServerVersion() + ".PacketPlayOutSpawnEntity").getConstructor(Class.forName("net.minecraft.server." + getServerVersion() + ".Entity"), int.class, int.class);
                     final Method sendPacketMethod = playerConnection.getClass().getMethod("sendPacket", Class.forName("net.minecraft.server." + getServerVersion() + ".Packet"));
                     new BukkitRunnable() {
                         @Override
                         public void run() {
                             try {
                                 for (int i = 0; i <= instance.getConfig().getInt("Settings.EntitysCrash.PacketLimit"); i++) {
-                                    final Object entity = entityConstructor.newInstance(world, x, y, z, blockData);
-                                    final Object packet = packetConstructor.newInstance(entity, 70, materialId);
+                                    final Object packet = packetConstructor.newInstance(entityConstructor.newInstance(world, x, y, z, blockData), 70, materialId);
                                     sendPacketMethod.invoke(playerConnection, packet);
                                 }
                             } catch (Exception e) {
@@ -401,19 +303,19 @@ public final class Utils {
             channel.pipeline().addBefore("packet_handler", "cancel_packets", new ChannelDuplexHandler() {
                 @Override
                 public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
-                    if (!Utils.crashSet.contains(player.getUniqueId()) && msg.getClass().getSimpleName().equals("PacketPlayInKeepAlive") || msg.getClass().getSimpleName().equals("PacketPlayOutKeepAlive")) {
+                    if (!Utils.crashSet.contains(player.getUniqueId()) & msg.getClass().getSimpleName().equals("PacketPlayInKeepAlive") | msg.getClass().getSimpleName().equals("PacketPlayOutKeepAlive")) {
                         super.channelRead(ctx, msg);
                     } else {
                         queueRevivePacket(player, msg);
                     }
                     if (instance.getConfig().getBoolean("Debug.PacketListener.mode")) {
-                        instance.getLogger().info("DEBUG-PACKET-READER: " + msg);
+                        instance.getLogger().info("DEBUG-PACKET READER: " + msg);
                     }
                 }
 
                 @Override
                 public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) throws Exception {
-                    if (!Utils.crashSet.contains(player.getUniqueId()) && msg.getClass().getSimpleName().equals("PacketPlayInKeepAlive") || msg.getClass().getSimpleName().equals("PacketPlayOutKeepAlive")) {
+                    if (!Utils.crashSet.contains(player.getUniqueId()) & msg.getClass().getSimpleName().equals("PacketPlayInKeepAlive") | msg.getClass().getSimpleName().equals("PacketPlayOutKeepAlive")) {
                         super.write(ctx, msg, promise);
                     } else if (instance.getConfig().getBoolean("Settings.CancelPackets.CancelPacketsResend")) {
                         queuePacket(player, msg);
@@ -459,8 +361,21 @@ public final class Utils {
     }
 
     public static void unregisterInstance() {
-        metrics.shutdown();
-        metrics = null;
+        Utils.crashSet.stream().parallel()
+                .forEach(uuid -> {
+                    Utils.removeCrashSet(uuid);
+                    if (Bukkit.getPlayer(uuid) != null) {
+                        Utils.removePacketListener(Bukkit.getPlayer(uuid));
+                    }
+                });
+        packetReviveQueues.clear();
+        packetQueues.clear();
+        crashSet.clear();
+        frozenSet.clear();
+        if (metrics != null) {
+            metrics.shutdown();
+            metrics = null;
+        }
         serverVersion = null;
         Utils.instance = null;
     }

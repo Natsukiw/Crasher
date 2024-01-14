@@ -12,5 +12,5 @@ permissions:
     default: op
 commands:
   Crash:
-    description: Crash Player Client
+    description: Crash Commands
     permission: crasher.admin
