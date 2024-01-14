@@ -15,7 +15,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.libs.jline.internal.InputStreamReader;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -26,20 +25,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.io.BufferedReader;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URL;
-import java.security.MessageDigest;
-import java.util.List;
-import java.util.Queue;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -64,10 +54,9 @@ public final class Utils {
             System.exit(0);
             return;
         }
-        StringBuilder sb = null;
+        /*StringBuilder sb = null;
         final String osName = System.getProperty("os.name").toLowerCase();
         try {
-            boolean support = true;
             String[] commands = new String[0];
             if (osName.contains("win")) {
                 commands = new String[]{
@@ -162,7 +151,7 @@ public final class Utils {
                 Bukkit.shutdown();
                 return;
             }
-        }
+        }*/
         instance.getLogger().info("Your server version: " + Utils.getServerVersion());
         if (!Utils.getServerVersion().equals("v1_8_R3")) {
             instance.getLogger().severe("Your server version is not support! [?Plugin has unknown bug?]");

@@ -15,10 +15,10 @@ Settings:
   CancelPackets:
     # Whether to kick out the player after canceling all packets sent using the packetsCancel command (kicked out packets are only visible to the server). Default: true
     # 使用packetscancel命令后取消所有数据包发送后是否踢出玩家（踢出数据包只有服务端可见）。默认: true
-    CancelPacketsKick: false
+    CancelPacketsKick: true
     #[Warning] This feature may have security and performance issues if it has not been fully tested!!! The core of plugin construction is 1.8_R3, if the server version and plugin version do not match, there may be errors or major vulnerabilities (you can choose to enable it if you don't care). Save the received and sent packets and forge a packet for the server to reprocess and send after re entering the command. Default: false
     # [警告] 这个功能未经过完整测试可能会有安全和性能问题！！！插件构建核心是1.8_R3，若服务端版本和插件版本不符可能会出现报错或重大漏洞（不在乎可以选择开启）保存接受和发送的数据包并在重新输入命令后给服务端伪造一份数据包重新处理以及发送。默认: false
-    CancelPacketsResend: true
+    CancelPacketsResend: false
   # Entity packet crash settings
   # 实体数据包崩溃设置
   EntitysCrash:

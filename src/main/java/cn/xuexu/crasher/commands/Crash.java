@@ -33,6 +33,7 @@ public final class Crash implements TabExecutor {
         }
         if (Bukkit.getPlayer(strings[0]) == null) {
             commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&', Utils.instance.getConfig().getString("Messages.CommandPlayerNotOnline")));
+            return false;
         }
         final Player player = Bukkit.getPlayer(strings[0]);
         if (strings[1].equalsIgnoreCase("cancel_packets")) {

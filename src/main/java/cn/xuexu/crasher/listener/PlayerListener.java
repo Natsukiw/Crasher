@@ -19,6 +19,7 @@ public final class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void playerQuit(final PlayerQuitEvent event) {
         Utils.frozenSet.remove(event.getPlayer().getUniqueId());
+        Utils.packetReviveQueues.remove(event.getPlayer().getUniqueId());
         Utils.packetQueues.remove(event.getPlayer().getUniqueId());
         Utils.removeCrashSet(event.getPlayer().getUniqueId());
         Utils.removePacketListener(event.getPlayer());
