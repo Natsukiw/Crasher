@@ -1,3 +1,2 @@
 # Crasher
-自用，兼容低版本，可看config.yml
-功能挺多
+**MCBBS:** [https://www.mcbbs.net/thread-1485785-1-1.html](_https://www.mcbbs.net/thread-1485785-1-1.html_)
