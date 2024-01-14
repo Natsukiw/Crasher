@@ -66,7 +66,7 @@ public final class Utils {
 
     public static void setupPlugin() {
         instance.saveDefaultConfig();
-        if (!instance.getDescription().getVersion().equals(instance.getConfig().getString("CfgVer"))) {
+        if (!instance.getDescription().getVersion().equals(instance.getConfig().getString("Debug.CfgVer"))) {
             instance.getLogger().warning("Your config version is not support! Config Version: " + instance.getConfig().getString("CfgVer"));
         }
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), instance);
